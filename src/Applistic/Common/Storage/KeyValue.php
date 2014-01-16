@@ -79,6 +79,11 @@ class KeyValue implements Countable, Iterator
      */
     public function set($key, $value)
     {
+        if (!is_string($key)) {
+            $message = "\$key must be a string.";
+            throw new \InvalidArgumentException($message);
+        }
+
         $this->items[$key] = $value;
         $this->keys = array_keys($this->items);
     }
@@ -213,7 +218,7 @@ class KeyValue implements Countable, Iterator
      */
     public function key()
     {
-        return $this->index;
+        return $this->keys[$this->index];
     }
 
     /**
