@@ -1,0 +1,29 @@
+{
+    "name": "applistic/common",
+    "description": "Provides common utility classes for any type of application.",
+    "keywords": ["storage", "array", "collection", "key", "value"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Frederic Filosa",
+            "email": "filosa@applistic.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "classmap": [
+            "tests"
+        ],
+        "psr-0": {
+            "Applistic\\Common\\": "src/"
+        }
+    },
+    "scripts": {
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "minimum-stability": "dev"
+}
