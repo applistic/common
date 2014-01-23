@@ -4,7 +4,6 @@ namespace Applistic\Common;
 
 use Closure;
 use Countable;
-use Iterator;
 use ArrayAccess;
 
 /**
@@ -14,7 +13,7 @@ use ArrayAccess;
  * @copyright (c) 2014, Frederic Filosa
  * @license http://www.opensource.org/licenses/mit-license.php MIT License
  */
-class KeyValue implements Countable, Iterator, ArrayAccess
+class KeyValue implements Countable, ArrayAccess
 {
 // ===== CONSTANTS =============================================================
 // ===== STATIC PROPERTIES =====================================================
@@ -27,13 +26,6 @@ class KeyValue implements Countable, Iterator, ArrayAccess
      * @var array
      */
     protected $items = array();
-
-    /**
-     * The items keys.
-     *
-     * @var array
-     */
-    protected $keys = array();
 
     /**
      * The iterator index.
@@ -87,7 +79,6 @@ class KeyValue implements Countable, Iterator, ArrayAccess
         }
 
         $this->items[$key] = $value;
-        $this->keys = array_keys($this->items);
     }
 
     /**
@@ -114,7 +105,6 @@ class KeyValue implements Countable, Iterator, ArrayAccess
     public function remove($key)
     {
         unset($this->items[$key]);
-        $this->keys = array_keys($this->items);
     }
 
     /**
@@ -149,7 +139,20 @@ class KeyValue implements Countable, Iterator, ArrayAccess
     public function shuffle()
     {
         shuffle($this->items);
-        $this->keys = array_keys($this->items);
+    }
+
+    /**
+     * Sorts the keys alphabetically.
+     *
+     * @return void
+     */
+    public function sort($order = 'asc')
+    {
+        if ($order == 'desc') {
+            krsort($this->items);
+        } else {
+            ksort($this->items);
+        }
     }
 
     /**
@@ -171,7 +174,6 @@ class KeyValue implements Countable, Iterator, ArrayAccess
     {
         $this->items = array();
         $this->rewind();
-        $this->keys = array_keys($this->items);
     }
 
     /**
@@ -184,7 +186,11 @@ class KeyValue implements Countable, Iterator, ArrayAccess
      */
     public function each(Closure $handler)
     {
-        array_walk($this->items, $handler);
+        foreach ($this->items as $key => $value) {
+            if ($handler($key, $value) === false) {
+                break;
+            }
+        }
     }
 
 // ===== ARRAY-ACCESS INTERFACE ================================================
@@ -241,60 +247,6 @@ class KeyValue implements Countable, Iterator, ArrayAccess
     {
         return count($this->items);
     }
-
-
-// ===== ITERATOR INTERFACE ====================================================
-
-    /**
-     * Returns the item at the current index.
-     *
-     * @return mixed
-     */
-    public function current()
-    {
-        return $this->items[$this->keys[$this->index]];
-    }
-
-    /**
-     * Returns the current index.
-     *
-     * @return int
-     */
-    public function key()
-    {
-        return $this->keys[$this->index];
-    }
-
-    /**
-     * Increase the index.
-     *
-     * @return void
-     */
-    public function next()
-    {
-        $this->index++;
-    }
-
-    /**
-     * Reset the index.
-     *
-     * @return void
-     */
-    public function rewind()
-    {
-        $this->index = 0;
-    }
-
-    /**
-     * Checks the validity of the index.
-     *
-     * @return boolean
-     */
-    public function valid()
-    {
-        return ($this->index < count($this->items));
-    }
-
 
 // ===== PROTECTED METHODS =====================================================
 
