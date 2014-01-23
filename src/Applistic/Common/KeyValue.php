@@ -1,18 +1,20 @@
 <?php
 
-namespace Applistic\Common\Storage;
+namespace Applistic\Common;
 
 use Closure;
 use Countable;
 use Iterator;
+use ArrayAccess;
 
 /**
- * A wrapper class for arrays.
+ * A basic key/value store.
  *
- * @author Frederic Filosa <filosa.frederic@gmail.com>
- * @copyright (c) 2013, applistic.com
+ * @author Frederic Filosa <fred@applistic.com>
+ * @copyright (c) 2014, Frederic Filosa
+ * @license http://www.opensource.org/licenses/mit-license.php MIT License
  */
-class KeyValue implements Countable, Iterator
+class KeyValue implements Countable, Iterator, ArrayAccess
 {
 // ===== CONSTANTS =============================================================
 // ===== STATIC PROPERTIES =====================================================
@@ -134,9 +136,9 @@ class KeyValue implements Countable, Iterator
      * @param  numeric $amount The amount to remove.
      * @return void
      */
-    public function decrease($key, $amount = -1)
+    public function decrease($key, $amount = 1)
     {
-        $this->changeNumericValue($key, $amount);
+        $this->changeNumericValue($key, $amount, true);
     }
 
     /**
@@ -155,7 +157,7 @@ class KeyValue implements Countable, Iterator
      *
      * @return string
      */
-    public function toJson()
+    public function json()
     {
         return json_encode($this->items);
     }
@@ -185,6 +187,48 @@ class KeyValue implements Countable, Iterator
         array_walk($this->items, $handler);
     }
 
+// ===== ARRAY-ACCESS INTERFACE ================================================
+
+    /**
+     * [booleanoffsetExists description]
+     * @param  mixed  $offset
+     * @return boolean
+     */
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->items);
+    }
+
+    /**
+     * [mixedoffsetGet description]
+     * @param  mixed  $offset
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this->items[$offset];
+    }
+
+    /**
+     * [voidoffsetSet description]
+     * @param  mixed  $offset
+     * @param  mixed  $value
+     * @return void
+     */
+    public function offsetSet($offset , $value)
+    {
+        $this->items[$offset] = $value;
+    }
+
+    /**
+     * [voidoffsetUnset description]
+     * @param  mixed  $offset
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->items[$offset]);
+    }
 
 // ===== COUNTABLE INTERFACE ===================================================
 
@@ -261,7 +305,7 @@ class KeyValue implements Countable, Iterator
      * @param  integer $amount The amount to add or remove.
      * @return void
      */
-    protected function changeNumericValue($key, $amount)
+    protected function changeNumericValue($key, $amount, $negative = false)
     {
         if (!is_numeric($amount)) {
             throw new \InvalidArgumentException("\$amount must be numeric.");
@@ -273,7 +317,12 @@ class KeyValue implements Countable, Iterator
             throw new \Exception("\The \$key's value must be numeric.");
         }
 
-        $this->items[$key] = $v + $amount;
+        if ($negative === true) {
+            $this->items[$key] = $v - $amount;
+        } else {
+            $this->items[$key] = $v + $amount;
+        }
+
     }
 
 // ===== PRIVATE METHODS =======================================================
