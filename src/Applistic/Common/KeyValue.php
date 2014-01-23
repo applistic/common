@@ -155,12 +155,17 @@ class KeyValue implements Countable, ArrayAccess
         }
     }
 
+    public function toArray()
+    {
+        return $this->items;
+    }
+
     /**
      * Returns a JSON representation.
      *
      * @return string
      */
-    public function json()
+    public function toJson()
     {
         return json_encode($this->items);
     }
