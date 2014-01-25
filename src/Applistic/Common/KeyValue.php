@@ -27,13 +27,6 @@ class KeyValue implements Countable, ArrayAccess
      */
     protected $items = array();
 
-    /**
-     * The iterator index.
-     *
-     * @var integer
-     */
-    protected $index = 0;
-
 
 // ===== CONSTRUCTOR ===========================================================
 
@@ -171,7 +164,7 @@ class KeyValue implements Countable, ArrayAccess
     }
 
     /**
-     * Removes all items and restore the index.
+     * Removes all items.
      *
      * @return void
      */
