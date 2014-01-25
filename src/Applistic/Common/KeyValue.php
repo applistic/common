@@ -63,6 +63,7 @@ class KeyValue implements Countable, ArrayAccess
      *
      * @param string|int $key
      * @param mixed $value
+     * @return \Applistic\Common\KeyValue
      */
     public function set($key, $value)
     {
@@ -72,6 +73,8 @@ class KeyValue implements Countable, ArrayAccess
         }
 
         $this->items[$key] = $value;
+
+        return $this;
     }
 
     /**
@@ -93,11 +96,13 @@ class KeyValue implements Countable, ArrayAccess
      * Removes a key.
      *
      * @param  string $key The key to remove.
-     * @return void
+     * @return \Applistic\Common\KeyValue
      */
     public function remove($key)
     {
         unset($this->items[$key]);
+
+        return $this;
     }
 
     /**
@@ -105,11 +110,13 @@ class KeyValue implements Countable, ArrayAccess
      *
      * @param  string  $key    The key.
      * @param  numeric $amount The amount to add.
-     * @return void
+     * @return \Applistic\Common\KeyValue
      */
     public function increase($key, $amount = 1)
     {
         $this->changeNumericValue($key, $amount);
+
+        return $this;
     }
 
     /**
@@ -117,27 +124,31 @@ class KeyValue implements Countable, ArrayAccess
      *
      * @param  string  $key    The key.
      * @param  numeric $amount The amount to remove.
-     * @return void
+     * @return \Applistic\Common\KeyValue
      */
     public function decrease($key, $amount = 1)
     {
         $this->changeNumericValue($key, $amount, true);
+
+        return $this;
     }
 
     /**
      * Randomizes.
      *
-     * @return void
+     * @return \Applistic\Common\KeyValue
      */
     public function shuffle()
     {
         shuffle($this->items);
+
+        return $this;
     }
 
     /**
      * Sorts the keys alphabetically.
      *
-     * @return void
+     * @return \Applistic\Common\KeyValue
      */
     public function sort($order = 'asc')
     {
@@ -146,8 +157,15 @@ class KeyValue implements Countable, ArrayAccess
         } else {
             ksort($this->items);
         }
+
+        return $this;
     }
 
+    /**
+     * Returns the items as an array.
+     *
+     * @return array
+     */
     public function toArray()
     {
         return $this->items;
@@ -166,12 +184,14 @@ class KeyValue implements Countable, ArrayAccess
     /**
      * Removes all items.
      *
-     * @return void
+     * @return \Applistic\Common\KeyValue
      */
     public function clear()
     {
         $this->items = array();
         $this->rewind();
+
+        return $this;
     }
 
     /**
